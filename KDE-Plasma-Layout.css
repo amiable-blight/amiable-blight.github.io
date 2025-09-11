@@ -1,0 +1,305 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+</style>
+
+<style>
+:root {
+    --headers: #3A9ED2;
+    --text: #FFFFFF;
+    --names: #1CDC9A;
+    --links: #FFFFFF;
+    --hover: #FFFFFF;
+    --borders: 2px solid #FFFFFF !important;
+    --font-family: "JetBrains Mono", monospace;
+    --curve: 5px;
+}
+
+main .left {
+    padding-top: 15px;
+    padding-right: 10px;
+}
+
+.url-info {display: none !important;}
+
+.blurbs .heading{display: none !important;}
+
+
+/*headings*/
+h3, h4, h5, .url-info b {color: var(--headers) !important;}
+
+/*link color*/
+a {color: var(--links) !important;}
+/*link color (hover)*/
+a:hover {color: var(--hover) !important;}
+
+/*body text color*/
+p, h2 {color: var(--text) !important;}
+
+/*names & friend count color*/
+h1, .friends a p {color: var(--names) !important;}
+/*color of names on hover*/
+h1, .friends a:hover p {color: var(--hover) !important;}
+
+/*about & meet headings*/
+.section h4 {color: var(--headers) !important; text-align: center;}
+
+/*line in between comment replies*/
+.comment-reply:not(:first-child) {border-top: 3px double hotpink;}
+.count {color: #1CDC9A}
+
+
+/*text decoration*/
+a:hover, a:active, .blog-entry .kudos-btn:hover, .blog-entry .kudos-btn:active {
+    text-decoration: underline;
+}
+
+.logout-btn:hover, .logout-btn:active {
+    text-decoration: underline;
+}
+
+nav .top a:hover {
+    text-decoration: underline;
+}
+
+nav .links a:hover {
+    text-decoration: underline;
+}
+
+
+/*font*/
+h2, h3, h4, h5, a, p, nav label, .section {
+    font-family: var(--font-family) !important;
+    font-size: 13px!important;
+}
+
+
+/*padding & margin*/
+.icon {
+    border: none !important;
+}
+
+.blurbs {
+    margin-top: 10px !important;
+    margin-bottom: 30px !important;
+}
+
+.friends {
+    margin-top: -10px !important;
+    margin-bottom: 30px !important;
+}
+
+.profile-info {
+    border-radius: var(--curve) !important;
+}
+
+.comments-table {
+    border-radius: var(--curve) !important;
+    margin-top: 30px !important;
+}
+
+.table-section {
+    padding-bottom: 7px !important;
+    margin-top: 30px !important!;
+}
+
+#comments {
+margin-top: 5px !important;
+padding-bottom: 5px !important;
+}
+
+.details p:last-child {
+    color: var(--links) !important;
+}
+
+.mood {
+    margin-top: 20px;
+}
+
+
+/*background*/
+body {
+    background-image: url(https://i.postimg.cc/MHDns1GB/desktop.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: top center;
+}
+
+
+/*navigation*/
+nav {
+    background: rgba(35, 38, 39, 0.25);
+    margin-bottom: 30px;
+    border: var(--borders);
+}
+
+nav .top {
+    background: #2A2E32 !important;
+    color: var(--headers);
+}
+
+nav .links {
+    background: #2A2E32;
+    text-align: center;
+}
+
+nav img.logo {
+    filter: invert(15%) sepia(89%) saturate(493%) hue-rotate(82deg) brightness(93%) contrast(85%); !important;
+}
+
+nav .links li:not(:last-child)::after, footer .links li:not(:last-child)::after {
+    content: " | ";
+    color: var(--headers);
+}
+
+
+/*online icon*/
+.online {
+    content: url(https://i.postimg.cc/pdpm2BcG/online.gif);
+}
+
+
+/*profile name*/
+h1 {
+    font-family: 'Jetbrains Mono', monospace;
+    font-size: 25px !important;
+    margin-top: -10px!important;
+    color: #C0392B!important;
+}
+
+h1::after {
+    content: " ~ #";
+    color: #3A9ED2;
+}
+
+
+/*box shadows*/
+
+.mood, .blog-preview, .contact {
+    margin-bottom: 30px;
+}
+
+.table-section, .blurbs, .friends {
+    margin-bottom: 30px !important;
+}
+
+.friends {
+    margin-top: 10px!important;
+}
+
+.profile-info {
+    background: rgba(35, 38, 39, 0.7);
+    border: var(--borders)!important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 5px;
+    margin-bottom: 30px;
+}
+
+.profile-info .inner {
+    font-weight: bold;
+    text-align: center;
+}
+
+.contact {
+    background: rgba(35, 38, 39, 0.7);
+    padding: 20px;
+    margin-bottom: 40px!important;
+}
+
+main {
+    background: transparent;
+    padding: 6px 0px;
+}
+
+.friends-grid img {
+    outline: none !important;
+    filter: opacity(90%) !important;
+    border-radius: var(--curve) !important;
+}
+
+td {
+    background-color: transparent!important;
+}
+
+hr {
+    border-top: 1px solid pink;
+}
+
+.heading, .url-info, .blurbs, .friends, .table, .table-section, footer {
+    border-radius: var(--curve) !important;
+    padding: 2px !important;
+    border: var(--borders) !important;
+}
+
+.friends, .blurbs {
+    background: rgba(35, 38, 39, 0.7);
+}
+
+.mood, .contact, .blog-preview {
+    border-radius: var(--curve) !important;
+    padding: 2px !important;
+    border: var(--borders) !important;
+}
+
+.mood, .blog-preview {
+    text-align: center;
+    background: rgba(35, 38, 39, 0.7);
+    border: var(--borders) !important;
+}
+
+.table-section {
+    border: var(--borders) !important;
+    background-color: rgba(35, 38, 39, 0.7)!important;
+    border-radius: var(--curve) !important;
+}
+
+.heading {
+    background: transparent!important;
+    padding-bottom: 4px !important;
+    background-size: 100%100%!important;
+    text-align: center;
+    border: none!important;
+}
+
+.comments-table {
+    display: block;
+    height: 500px!important;
+    overflow-y: scroll;
+    border: var(--borders) !important;
+    outline: none !important;
+    border: none!important;
+}
+
+.comments-table td {
+    background-image: url('') !important;
+    background-size: cover;
+    border: var(--borders);
+}
+
+.comments-table td:first-child img {
+}
+
+.col.w-40.left {
+    border: var(--borders);
+    background: rgba(35, 38, 39, 0.7);
+    border-radius: var(--curve);
+}
+
+.profile-pic img {
+    outline: none !important;
+    border-radius: var(--curve);
+}
+
+/*footer*/
+footer {
+    color: var(--text);
+    text-align: center;
+    font-size: 60%;
+    margin: 10px 0 10px;
+    padding: 10px 5px;
+    background: #2A2E32;
+}
+
+
+</style>
