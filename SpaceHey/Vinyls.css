@@ -1,0 +1,309 @@
+<!-- (c) Layout created by Jack ☂ (https://layouts.spacehey.com/layout?id=106135) -->
+
+<!----- VINYL VINYL VINYL VINYL ---->
+
+<style>
+#vinyl-gallery * {
+    all: unset;
+  }
+ 
+  #vinyl-gallery {
+    all: initial!important;
+    width: 100%!important;
+    height: 230px!important;
+    margin: 30px 0!important;
+    display: flex!important;
+    flex-direction: row!important;
+    position: relative!important;
+    margin-left: -6px!important;
+  }
+ 
+  #vinyl-gallery .vinyl {
+      all:unset!important;
+    perspective: 500px !important;
+    width: 18px!important;
+    transition: width 0.5s!important;
+  }
+ 
+  #vinyl-gallery .vinyl:hover {
+    width: 148px!important;
+  }
+ 
+  #vinyl-gallery img {
+      all:unset!important;
+    transition: transform 0.5s, width 0.5s, height 0.5s, margin-top 0.5s!important;
+    width: 180px!important;
+    height: 180px!important;
+    transform: rotateX(0deg) rotateY(25deg)!important;
+    transform-style: preserve-3d!important;
+    border-radius: 4px!important;
+    border: 2px solid rgba(0, 0, 0, 0.1)!important;
+object-fit: cover!important;
+  }
+ 
+  #vinyl-gallery .vinyl:hover img {
+    transform: rotateX(0deg) rotateY(10deg)!important;
+    width: 188px!important;
+    height: 188px!important;
+    margin-top: -2px!important;
+  }
+ 
+  #vinyl-gallery .title {
+    color: #3A9ED2;
+    display: block;
+    visibility: hidden;
+    position: absolute;
+    bottom: 0px;
+    text-align: center;
+    width: 100%;
+    padding-left: 6px;
+    font-family: "Jetbrains Mono", monospace;
+    font-size: 13px !important;
+  }
+ 
+  #vinyl-gallery .vinyl:nth-child(n):hover + .title {
+    visibility: visible;
+  }
+
+</style>
+<div id="vinyl-gallery">
+  <div class="vinyl">
+    <img src="https://e.snmc.io/i/600/w/98a24dcaf7e17a5e8a53d8d363dd5b7f/2092125/they-might-be-giants-flood-Cover-Art.jpg"/>
+  </div>
+  <div class="title">They Might Be Giants - Flood</div>
+
+  <div class="vinyl">
+    <img src="https://e.snmc.io/i/600/w/bda534f2f56331a872e1c9c75bd22768/1738436/that-handsome-devil-that-handsome-devil-Cover-Art.jpg"/>
+  </div>
+  <div class="title">That Handsome Devil - Self-Titled</div>
+
+  <div class="vinyl">
+    <img src="https://e.snmc.io/i/600/w/17459ed745a70070754acf268a374012/9918097/against-me-transgender-dysphoria-blues-Cover-Art.jpg"/>
+  </div>
+  <div class="title">Against Me! - Transgender Dysphoria Blues</div>
+
+  <div class="vinyl">
+    <img src="https://e.snmc.io/i/600/w/8818175a62408411f89a229ae0de9c03/6805188/the-be-good-tanyas-chinatown-Cover-Art.jpg"/>
+  </div>
+  <div class="title">The Be Good Tanyas - Chinatown</div>
+
+  <div class="vinyl">
+    <img src="https://e.snmc.io/i/600/w/7cb045c4ec8edc7923b035b16dafcaa5/12066432/the-front-bottoms-the-front-bottoms-Cover-Art.jpg"/>
+  </div>
+  <div class="title">The Front Bottoms - Self-Titled</div>
+
+  <div class="vinyl">
+    <img src="https://e.snmc.io/i/600/w/5042b10801e46a1db7b4f511b99512ac/12002654/harley-poe-and-joe-whiteford-in-the-dark-or-b-movie-trash-Cover-Art.jpg"/>
+  </div>
+  <div class="title">Harley Poe - In the Dark: Or, B-Movie Trash!</div>
+
+  <div class="vinyl">
+    <img src="https://e.snmc.io/i/600/w/714b166abb63018d05a7094e27214a99/6381726/nine-inch-nails-pretty-hate-machine-Cover-Art.png"/>
+  </div>
+  <div class="title">Nine Inch Nails - Pretty Hate Machine</div>
+
+  <div class="vinyl">
+    <img src="https://e.snmc.io/i/600/w/fa572c677e761547a2660c40fb01353d/1451903/oingo-boingo-dead-mans-party-Cover-Art.jpg"/>
+  </div>
+  <div class="title">Oingo Boingo - Dead Man's Party</div>
+
+  <div class="vinyl">
+    <img src="https://e.snmc.io/i/600/w/01f4fa082cf989064b519bbc808d88db/2590888/company-of-thieves-ordinary-riches-Cover-Art.jpg"/>
+  </div>
+  <div class="title">Company of Thieves - Ordinary Riches</div>
+
+  <div class="vinyl">
+    <img src="https://e.snmc.io/i/600/w/199862349d6382a88103a10b457c2df3/7120882/the-strokes-is-this-it-Cover-Art.jpg"/>
+  </div>
+  <div class="title">The Strokes - Is This It</div>
+
+  <div class="vinyl">
+    <img src="https://e.snmc.io/i/600/s/0e8898ed21e6d826263e516edee163c9/8969577/jamiroquai-travelling-without-moving-Cover-Art.jpg"/>
+  </div>
+  <div class="title">Jamiroquai - Travelling Without Moving</div>
+
+  <div class="vinyl">
+    <img src="https://e.snmc.io/i/600/w/62b26c8c0c33142400503db68eea24f7/7386608/the-decemberists-picaresque-Cover-Art.jpg"/>
+  </div>
+  <div class="title">The Decemberists - Picaresque</div>
+
+  <div class="vinyl">
+    <img src="https://e.snmc.io/i/600/w/746d44df4a848456c2a53047c349858d/2340907/radiohead-in-rainbows-Cover-Art.jpg"/>
+  </div>
+  <div class="title">Radiohead - In Rainbows</div>
+
+  <div class="vinyl">
+    <img src="https://e.snmc.io/i/600/w/a0cceaf109c7e5e097fffada78a84bcd/12093268/will-wood-and-the-tapeworms-everything-is-a-lot-Cover-Art.jpg"/>
+  </div>
+  <div class="title">Will Wood and the Tapeworms - Everything Is a Lot</div>
+
+  <div class="vinyl">
+    <img src="https://e.snmc.io/i/600/w/77fcff4bf77f43b91f7abd7cbcf283ca/12604467/mitski-laurel-hell-Cover-Art.jpg"/>
+  </div>
+  <div class="title">Mitski - Laurel Hell</div>
+
+  <div class="vinyl">
+    <img src="https://e.snmc.io/i/600/w/c7a6796be177c9bcba40e64d952301aa/8103020/the-crane-wives-coyote-stories-Cover-Art.jpg"/>
+  </div>
+  <div class="title">The Crane Wives - Coyote Stories</div>
+
+  <div class="vinyl">
+    <img src="https://e.snmc.io/i/600/w/c97313aa893808f196b9fc8b632cd744/2345745/my-chemical-romance-i-brought-you-my-bullets-you-brought-me-your-love-Cover-Art.jpg"/>
+  </div>
+  <div class="title">My Chemical Romance - I Brought You My Bullets, You Brought Me Your Love</div>
+</div>
+
+<!-- (c) Layout created by Jack ☂ (https://layouts.spacehey.com/layout?id=106135) -->
+
+<!----- VINYL VINYL VINYL VINYL ---->
+
+<style>
+#vinyl-gallery * {
+    all: unset;
+  }
+ 
+  #vinyl-gallery {
+    all: initial!important;
+    width: 100%!important;
+    height: 230px!important;
+    margin: 30px 0!important;
+    display: flex!important;
+    flex-direction: row!important;
+    position: relative!important;
+    margin-left: -6px!important;
+  }
+ 
+  #vinyl-gallery .vinyl {
+      all:unset!important;
+    perspective: 500px !important;
+    width: 18px!important;
+    transition: width 0.5s!important;
+  }
+ 
+  #vinyl-gallery .vinyl:hover {
+    width: 148px!important;
+  }
+ 
+  #vinyl-gallery img {
+      all:unset!important;
+    transition: transform 0.5s, width 0.5s, height 0.5s, margin-top 0.5s!important;
+    width: 180px!important;
+    height: 180px!important;
+    transform: rotateX(0deg) rotateY(25deg)!important;
+    transform-style: preserve-3d!important;
+    border-radius: 4px!important;
+    border: 2px solid rgba(0, 0, 0, 0.1)!important;
+object-fit: cover!important;
+  }
+ 
+  #vinyl-gallery .vinyl:hover img {
+    transform: rotateX(0deg) rotateY(10deg)!important;
+    width: 188px!important;
+    height: 188px!important;
+    margin-top: -2px!important;
+  }
+ 
+  #vinyl-gallery .title {
+    color: #3A9ED2;
+    display: block;
+    visibility: hidden;
+    position: absolute;
+    bottom: 0px;
+    text-align: center;
+    width: 100%;
+    padding-left: 6px;
+    font-family: "Jetbrains Mono", monospace;
+    font-size: 13px !important;
+  }
+ 
+  #vinyl-gallery .vinyl:nth-child(n):hover + .title {
+    visibility: visible;
+  }
+
+</style>
+<div id="vinyl-gallery">
+  <div class="vinyl">
+    <img src="https://e.snmc.io/i/600/w/83af764dd645f6fbf2d3d0856f73ae3b/11614646/gerard-way-hesitant-alien-Cover-Art.jpg"/>
+  </div>
+  <div class="title">Gerard Way - Hesitant Alien</div>
+
+  <div class="vinyl">
+    <img src="https://e.snmc.io/i/600/w/49192180c114be687e9f9da87921f1d6/12562930/serj-tankian-elect-the-dead-Cover-Art.jpg"/>
+  </div>
+  <div class="title">Serj Tankian - Elect the Dead</div>
+
+  <div class="vinyl">
+    <img src="https://e.snmc.io/i/600/w/2e4f4f043de74d293bfe55af3b8505bb/10368883/panic-at-the-disco-a-fever-you-cant-sweat-out-Cover-Art.jpg"/>
+  </div>
+  <div class="title">P!ATD - A Fever You Can't Sweat Out</div>
+
+  <div class="vinyl">
+    <img src="https://e.snmc.io/i/600/w/c73f40fd759b8e4cd2a6847f5e7df8d1/2390851/insane-clown-posse-the-wraith-shangri-la-Cover-Art.jpg"/>
+  </div>
+  <div class="title">Insane Clown Posse - The Wraith: Shangri-La</div>
+
+  <div class="vinyl">
+    <img src="https://e.snmc.io/i/600/w/3896b42469fb7ecd1a71606364154868/9773050/franz-ferdinand-franz-ferdinand-Cover-Art.jpg"/>
+  </div>
+  <div class="title">Franz Ferdinand - Self-Titled</div>
+
+  <div class="vinyl">
+    <img src="https://e.snmc.io/i/600/w/00f8a50445ac72cd8c26129be525ded3/8729633/lemon-demon-view-monster-Cover-Art.jpg"/>
+  </div>
+  <div class="title">Lemon Demon - Lemon Demon</div>
+
+  <div class="vinyl">
+    <img src="https://cdn-p.smehost.net/sites/4788b7ad6b5448c1b90d9322361f98f3/wp-content/uploads/2018/03/02_pianoman_original_1200px.jpg"/>
+  </div>
+  <div class="title">Billy Joel - Piano Man</div>
+
+  <div class="vinyl">
+    <img src="https://e.snmc.io/i/600/w/c52c8b55f9ef7d7dc71b9b1cc8d76f9c/9123641/system-of-a-down-system-of-a-down-Cover-Art.jpg"/>
+  </div>
+  <div class="title">System of a Down - Self-Titled</div>
+
+  <div class="vinyl">
+    <img src="https://e.snmc.io/i/600/w/e998f34313b7331a9be1dd70fca83887/8660615/pavement-brighten-the-corners-Cover-Art.jpg"/>
+  </div>
+  <div class="title">Pavement - Brighten the Corners</div>
+
+  <div class="vinyl">
+    <img src="https://e.snmc.io/i/600/w/184158bf68b6757f175aebee5cd4da95/2479394/the-cure-kiss-me-kiss-me-kiss-me-Cover-Art.jpg"/>
+  </div>
+  <div class="title">The Cure - Kiss Me, Kiss Me, Kiss Me</div>
+
+  <div class="vinyl">
+    <img src="https://e.snmc.io/i/600/w/d8ea5cb61d786ac9b06b49ae93d4a4a2/6875628/muse-absolution-Cover-Art.jpg"/>
+  </div>
+  <div class="title">Muse - Absolution</div>
+
+  <div class="vinyl">
+    <img src="https://e.snmc.io/i/600/w/31ebf21567d4cc351ae44def0eb31e9f/5338066/hozier-hozier-Cover-Art.jpg"/>
+  </div>
+  <div class="title">Hozier - Self-Titled</div>
+
+  <div class="vinyl">
+    <img src="https://e.snmc.io/i/600/w/602fc0ef7a63b66a14b918314916520a/11294290/%D0%BA%D0%B8%D0%BD%D0%BE-kino-%D0%BF%D0%BE%D1%81%D0%BB%D0%B5%D0%B4%D0%BD%D0%B8%D0%B9-%D0%B3%D0%B5%D1%80%D0%BE%D0%B9-Cover-Art.jpg"/>
+  </div>
+  <div class="title">Кино - Последний герой</div>
+
+  <div class="vinyl">
+    <img src="https://e.snmc.io/i/600/w/f1f1e095a4ab128ba993eead38c77867/8543787/david-bowie-heroes-Cover-Art.jpg"/>
+  </div>
+  <div class="title">David Bowie - "Heroes" </div>
+
+  <div class="vinyl">
+    <img src="https://e.snmc.io/i/600/w/0ab95dca3ec396259c65c1df86f80259/6161577/abba-the-visitors-Cover-Art.jpg"/>
+  </div>
+  <div class="title">ABBA - The Visitors</div>
+
+  <div class="vinyl">
+    <img src="https://e.snmc.io/i/600/w/d2c47dff9053dc1a63aaf7d51bac5d69/1239796/phil-ochs-there-but-for-fortune-Cover-Art.jpg"/>
+  </div>
+  <div class="title">Phil Ochs - There But for Fortune</div>
+
+  <div class="vinyl">
+    <img src="https://e.snmc.io/i/600/w/9c9602390066b97fa527fef621fa52e4/12281204/jesse-welles-hells-welles-Cover-Art.jpg"/>
+  </div>
+  <div class="title">Jesse Welles - Hells Welles</div>
+</div>
