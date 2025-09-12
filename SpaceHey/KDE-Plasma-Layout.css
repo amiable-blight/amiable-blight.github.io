@@ -1,3 +1,7 @@
+/*This layout was reverse engineered off of Bela's "Purple Layout" (https://layouts.spacehey.com/layout?id=461), to which credit is due, even if my layout is not recognizable since. */
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+
 :root {
     --headers: #3A9ED2;
     --text: #FFFFFF;
@@ -8,8 +12,6 @@
     --font-family: "JetBrains Mono", monospace;
     --curve: 5px;
 }
-
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
 
 main .left {
     padding-top: 15px;
