@@ -1,10 +1,118 @@
 #! /bin/bash
-
-#//User Input//
 DATE=$(date "+%D, %r")
 DIR=$(pwd) #current directory
 
 
+#//Config File//
+conftest() {
+    sleep 5m
+    configinit
+}
+
+configinit () {
+CONFIG=/$DIR/usbackup.conf
+
+if [[ -f "$CONFIG" ]]; then
+    source $CONFIG
+    echo "$DATE Config file loaded." #TODO: Write to log file
+else
+    echo "USBackup configuration missing, please run 'usbackup -C'. If you have ran initial configuration, please check $DIR/usbackup.conf"
+    configtest
+fi
+}
+
+
+#//initialization//
+#Check for desired USB Drive
+usbinit () {
+    fdisk -l | grep -qo $USB_ID
+    usbstatus="$?" #0=dev detected, 1=not detected
+}
+
+usbcheck () {
+until [[ $usbstatus == 0 ]]; do #Must pass check to continue init
+    usbinit &>/dev/null #call function, suppress error output
+    sleep 10s
+done
+}
+
+#initialize network
+ninit () {
+    ip address show | grep -qwo NO-CARRIER
+    nstatus="$?" #0=no connection, 1=connection
+}
+ninit #init var
+
+#initialize USB
+usbcreate () {
+MTPT=$(fdisk -l | grep --after-context=4 $USB_ID | grep -oE '/dev/.{,4}' &>/dev/null) #fetches mount from fdisk
+mount $MTPT $USBMT #mount, make sure USB is labeled correctly before running
+cp -a $CPDIR $USBMT #when USB is first plugged in, update with current files
+echo "$DATE USB mounted, wrote updated files." #TODO: Write to log file
+}
+
+
+#//Main Operation//
+#Define functions
+ncheck () {
+until [[ $nstatus == 1 ]]; do #Do not proceed until network is obtained, already created a copy during init
+    ninit
+    echo "Obtaining Network" #for debug purposes
+    sleep 10s
+done
+
+if [[ $nstatus == 1 ]]; then
+    functional
+fi
+}
+
+rncheck () { #Running network check, does not call back, waits longer between network checks.
+    while [[ $nstatus == 1 ]]; do
+        ip address show | grep -qwo NO-CARRIER
+        nstatus="$?"
+        echo "Running Network Check" #for debug purposes
+        if [[ $nstatus == 0 ]]; then
+            noconnect
+            return 1
+        fi
+        sleep 10s
+    done
+}
+
+functional () {
+    rncheck &
+    while [[ $nstatus == 0 ]]; do &
+        return 1
+    done
+
+    while [[ $nstatus == 1 ]]; do
+            sleep 1m
+            echo "$DATE Time passed, writing to USB" #TODO: Write to log file
+            #cp -a /mnt/MS/TestDir/ /media/emergency-backup
+            #wait
+    done
+}
+
+noconnect () {
+    echo "$DATE Network down, writing to USB" #TODO: Write to log file
+    #cp -a /mnt/MS/TestDir/ /media/emergency-backup
+    ncheck
+}
+
+
+#Actual program start
+startup () {
+configinit #checks .conf file
+usbinit &>/dev/null #init var, suppress error output
+usbcheck #checks USB status
+usbcreate #mounts USB
+ncheck #starts loop
+}
+
+startup #calls startup process
+
+
+#//User Input//
 while getopts ":hCsur" flag; do
     case ${flag} in
         h)
@@ -14,10 +122,10 @@ while getopts ":hCsur" flag; do
 
             -h  (help)          Displays this help message.
             -C  (configure)     Opens the configuration dialog (Recommended first!).
-            -s  (status)        Displays the last 10 operations carried out by the program.
+            -s  (status)        Displays the last 25 operations carried out by the program.
             -u  (unmount)       Signals usbackup to unmount the USB safely.
             -r  (remount)       Signals to usbackup that the USB can be remounted.
-        For more info please see: (github link)"
+        For more info please see: (https://github.com/amiable-blight/amiable-blight.github.io/tree/main/Bash/USBackup)"
         ;;
         C)
         echo "USBackup configuration dialog:
@@ -36,12 +144,21 @@ while getopts ":hCsur" flag; do
         echo "USBMT=$USB_MOUNT" >> usbackup.conf
         echo "CPDIR=$USE_DIR" >> usbackup.conf
         echo "NOTE: When the config is changed, the old entry must manually be deleted at $DIR/usbackup.conf" | tee -a usbackup.conf
+        echo "NOTE: If the configuration is changed after its initial setup, either restart or run 'usbackup -u' then 'usbackup -r' to re-initialize."
+        echo "$DATE Config file updated." #TODO: Write to log file
         ;;
         s)
+        #show most recent 25 entries to log file
+        echo "Last 25 log entries shown. Full log is located at '$DIR/usbackup.log'. Feel free to clear log from time to time."
         ;;
         u)
+        echo "$DATE USB manually unmounted." #TODO: Write to log file
+        umount $MTPT
+        startup #triggers a stop by calling initial functions (hopefully)
         ;;
         r)
+        echo "$DATE USB manually remounted" #TODO: Write to log file
+        startup
         ;;
         :) echo "usbackup requires an argument. Try 'usbackup -h'"
         ;;
@@ -50,95 +167,5 @@ while getopts ":hCsur" flag; do
         esac
     done
 
-#//Config File//
-
-#Read #USB_ID, USBMT, and CPDIR from usbackup.conf
-
-
-
-
-
-#//initialization//
-#Check for desired USB Drive
-usbinit () {
-    fdisk -l | grep -qo $USB_ID #change to desired disk ID.
-    usbstatus="$?" #0=dev detected, 1=not detected
-}
-usbcheck &>/dev/null #init var, suppress error output
-
-until [[ $usbstatus == 0 ]]; do #Must pass check to continue init
-    usbinit &>/dev/null #call function, suppress error output
-    sleep 10s
-done
-
-#initialize network
-ninit () {
-    ip address show | grep -qwo NO-CARRIER
-    nstatus="$?" #0=no connection, 1=connection
-}
-ninit #init var
-
-#initialize USB
-usbcreate () {
-mtpt=$(fdisk -l | grep --after-context=4 $USB_ID | grep -oE '/dev/.{,4}' &>/dev/null) #fetches mount from fdisk
-mount $mtpt $USBMT #mount, make sure USB is labeled correctly before running
-cp -a $CPDIR $USBMT #when USB is first plugged in, update with current files
-}
-
-#//Main Operation//
-
-#Define functions
-ncheck () {
-until [[ $nstatus == 1 ]]; do #Do not proceed until network is obtained, already created a copy during init
-    ninit
-    echo "Obtaining Network"
-    sleep 10s
-done
-
-if [[ $nstatus == 1 ]]; then
-    functional
-fi
-}
-
-rncheck () { #Running network check, does not call back, waits longer between network checks.
-    while [[ $nstatus == 1 ]]; do
-        ip address show | grep -qwo NO-CARRIER
-        nstatus="$?"
-        echo "Running Network Check"
-        if [[ $nstatus == 0 ]]; then
-            noconnect
-            return 1
-        fi
-        sleep 10s
-    done
-}
-
-functional () {
-    rncheck &
-    while [[ $nstatus == 0 ]]; do &
-        return 1
-    done
-
-    while [[ $nstatus == 1 ]]; do
-            sleep 1m
-            echo "Time passed, writing to USB"
-            #cp -a /mnt/MS/TestDir/ /media/emergency-backup
-            #wait
-    done
-}
-
-noconnect () {
-    echo "Network down, writing to USB"
-    #cp -a /mnt/MS/TestDir/ /media/emergency-backup
-    ncheck
-}
-
-#Actual program start
-usbcreate #mounts USB
-ncheck #sets off the chain of functions
-
-
-
-
 #//Current Issues//
-#After noconnect() finishes, rncheck() runs but functional() does not. [should be fixed, untested as of yet]
+#After noconnect() finishes, rncheck() runs but functional() does not. [should work now, need to test.]
