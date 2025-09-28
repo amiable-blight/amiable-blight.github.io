@@ -13,13 +13,20 @@ conftest() {
 
 configinit () {
 CONFIG=/$DIR/usbackup.conf
+PARAMS=$(grep -o USB_ID $CONFIG && grep -o USBMT $CONFIG && grep -o CPDIR $CONFIG && grep -o TIME $CONFIG)
+PCHECK="$?" #0 = found, 1 = not found
 
 if [[ -f "$CONFIG" ]]; then
+    if [[ $PCHECK == 1 ]]; then
+      echo "USBackup configuration file is empty or missing components, please run 'usbackup -C'."
+      conftest
+      return 1
+    fi
     source $CONFIG
     dateup
-    echo "[$DATE] Config file loaded." #TODO: Write to log file
+    echo "[$DATE] Config file loaded." >> usbackup.log
 else
-    echo "USBackup configuration missing, please run 'usbackup -C'. If you have ran initial configuration, please check $DIR/usbackup.conf"
+    echo "USBackup configuration file missing, please run 'usbackup -C'."
     configtest
 fi
 }
@@ -52,7 +59,7 @@ MTPT=$(fdisk -l | grep --after-context=4 $USB_ID | grep -oE '/dev/.{,4}' &>/dev/
 mount $MTPT $USBMT #mount, make sure USB is labeled correctly before running
 cp -a $CPDIR $USBMT #when USB is first plugged in, update with current files
 dateup
-echo "[$DATE] USB mounted, wrote updated files." #TODO: Write to log file
+echo "[$DATE] USB mounted, wrote updated files." >> usbackup.log
 }
 
 
@@ -61,13 +68,12 @@ echo "[$DATE] USB mounted, wrote updated files." #TODO: Write to log file
 ncheck () {
 until [[ $nstatus == 1 ]]; do #Do not proceed until network is obtained, already created a copy during init
     ninit
-    echo "Obtaining Network" #for debug purposes
     sleep 10s
 done
 
 if [[ $nstatus == 1 ]]; then
     dateup
-    echo "[$DATE] Network Found" #TODO: Write to log file
+    echo "[$DATE] Network Found" >> usbackup.log
     functional
 
 fi
@@ -84,14 +90,10 @@ functional () {
 
                 if [[ $timer == $TIME ]]; then
                     ninit
-                    if [[ $nstatus == 0 ]]; then #worst case check, if network dies during last min
-                    echo "Worst Case Break!"
-                    noconnect
-                    return 1
-                    fi
+                    if [[ $nstatus == 0 ]]; then noconnect && return 1; fi #worst case check
                     timer=0
                     dateup
-                    echo "[$DATE] Time passed, writing to USB" #TODO: Write to log file
+                    echo "[$DATE] Time passed, writing to USB" >> usbackup.log
                     #cp -a $CPDIR $USBMT
                 fi
             else
@@ -104,7 +106,7 @@ functional () {
 
 noconnect () {
     dateup
-    echo "[$DATE] Network down, writing to USB" #TODO: Write to log file
+    echo "[$DATE] Network down, writing to USB" >> usbackup.log
     #cp -a $CPDIR $USBMT
     ncheck
 }
@@ -138,8 +140,9 @@ while getopts ":hCsur" flag; do
         For more info please see: (https://github.com/amiable-blight/amiable-blight.github.io/tree/main/Bash/USBackup)"
         ;;
         C)
-        echo "USBackup configuration dialog:
-        1) Disk ID of USB drive to save to (use 'fdisk -l' to find the disk)"
+        echo "USBackup configuration dialog:"
+        confconfig () {
+        echo "1) Disk ID of USB drive to save to (use 'fdisk -l' to find the disk)"
         read USBUUID
         echo "2) USB Mountpoint (format: /media/your-USB-directory)"
             read USB_MOUNT
@@ -156,7 +159,20 @@ while getopts ":hCsur" flag; do
         echo "NOTE: When the config is changed, the old entry must manually be deleted at $DIR/usbackup.conf" | tee -a usbackup.conf
         echo "NOTE: If the configuration is changed after its initial setup, either restart or run 'usbackup -u' then 'usbackup -r' to re-initialize."
         dateup
-        echo "[$DATE] Config file updated." #TODO: Write to log file
+        echo "[$DATE] Config file updated." | tee -a >> usbackup.log
+        }
+        if [[ $PCHECK == 0 ]]; then
+            echo "Configuration file is valid. Would you like to erase and start over? (y/n)"
+            read YN
+            if [[ $YN == y ]]; then
+                echo "#//USBACKUP CONFIGURATION FILE//" > usbackup.conf
+                echo "#This config file is very barebones, but more features may be added in time." >> usbackup.conf
+                confconfig
+            else
+                echo "Configuration aborted."
+                return 1
+            fi
+        fi
         ;;
         s)
         #show most recent 25 entries to log file
@@ -164,13 +180,13 @@ while getopts ":hCsur" flag; do
         ;;
         u)
         dateup
-        echo "[$DATE] USB manually unmounted." #TODO: Write to log file
+        echo "[$DATE] USB manually unmounted." | tee -a usbackup.log
         umount -f $MTPT
         start #triggers a stop by calling initial functions (hopefully)
         ;;
         r)
         dateup
-        echo "[$DATE] USB manually remounted" #TODO: Write to log file
+        echo "[$DATE] USB manually remounted" | tee -a usbackup.log
         start
         ;;
         :) echo "usbackup requires an argument. Try 'usbackup -h'"
@@ -182,4 +198,3 @@ while getopts ":hCsur" flag; do
 
 #//Current Issues//
 #Need to get the options working.
-#Need to write to the log file.
