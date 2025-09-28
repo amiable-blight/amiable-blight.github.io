@@ -66,27 +66,15 @@ until [[ $nstatus == 1 ]]; do #Do not proceed until network is obtained, already
 done
 
 if [[ $nstatus == 1 ]]; then
-    functional &
+    dateup
+    echo "[$DATE] Network Found" #TODO: Write to log file
+    functional
 
 fi
 }
 
-rncheck () { #Running network check, does not call back, waits longer between network checks.
-    while [[ $nstatus == 1 ]]; do
-        ip address show | grep -qwo NO-CARRIER
-        nstatus="$?"
-        echo "Running Network Check" #for debug purposes
-        if [[ $nstatus == 0 ]]; then
-            noconnect
-            return 1
-        fi
-        sleep 10s
-    done
-}
-
 functional () {
     timer=0
-    rncheck &
     while :; do
             echo "Timer is $timer"
             ninit
@@ -95,16 +83,22 @@ functional () {
                 ((timer++))
 
                 if [[ $timer == $TIME ]]; then
-                timer=0
-                dateup
-                echo "[$DATE] Time passed, writing to USB" #TODO: Write to log file
-                #cp -a $CPDIR $USBMT
+                    ninit
+                    if [[ $nstatus == 0 ]]; then #worst case check, if network dies during last min
+                    echo "Worst Case Break!"
+                    noconnect
+                    return 1
+                    fi
+                    timer=0
+                    dateup
+                    echo "[$DATE] Time passed, writing to USB" #TODO: Write to log file
+                    #cp -a $CPDIR $USBMT
                 fi
             else
                 echo "BROKE!"
+                noconnect
                 return 1
             fi
-
     done
 }
 
