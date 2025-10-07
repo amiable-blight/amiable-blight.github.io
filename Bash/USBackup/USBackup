@@ -4,6 +4,67 @@ DATE=$(date "+%D, %r")
 }
 DIR=$(dirname -- "$( readlink -f -- "$0"; )";) #credit to phatblat on StackOverflow
 
+
+
+#//Config File//
+configinit () {
+CONFIG=$DIR/usbackup.conf
+PARAMS=$(grep -o USB_ID $CONFIG && grep -o USBMT $CONFIG && grep -o CPDIR $CONFIG && grep -o TIME $CONFIG)
+PCHECK="$?" #0 = found, 1 = not found
+
+if [[ -f "$CONFIG" ]]; then
+    if [[ $PCHECK == 1 ]]; then
+      dateup
+      echo "[$DATE] ERROR: $CONFIG configured improperly!" >> $DIR/usbackup.log
+      echo "USBackup configuration file is empty or missing components, please run 'usbackup -C'"
+      return 0
+    fi
+    source $CONFIG
+    MTPT=$(fdisk -l | grep --after-context=4 $USB_ID | grep -oE '/dev/.{,4}' 2>/dev/null) #fetches mount from fdisk
+    dateup
+    echo "[$DATE] Config file loaded." >> $DIR/usbackup.log
+else
+    dateup
+    echo "[$DATE] ERROR: $CONFIG is missing!" >> $DIR/usbackup.log
+    echo "USBackup configuration file missing, please run 'usbackup -C'"
+    return 0
+fi
+}
+
+#//initialization//
+#Check for desired USB Drive
+usbinit () {
+    fdisk -l | grep -qo $USB_ID
+    usbstatus="$?" #0=dev detected, 1=not detected
+}
+
+usbcheck () {
+until [[ $usbstatus == 0 ]]; do #Must pass check to continue init
+    usbinit &>/dev/null #call function, suppress error output
+    echo "checking for usb"
+    sleep 10s
+done
+
+dateup
+echo "[$DATE] USB found." >> $DIR/usbackup.log
+}
+
+#initialize network
+ninit () {
+    ip address show | grep -qwo NO-CARRIER
+    nstatus="$?" #0=no connection, 1=connection
+}
+ninit #init var
+
+#initialize USB
+usbcreate () {
+mount -o defaults,rw,uid=1000,gid=1000,umask=0002 $MTPT $USBMT #mount, make sure USB is labeled correctly before running
+cp -a --no-preserve=ownership $CPDIR $USBMT #when USB is first plugged in, update with current files
+dateup
+echo "[$DATE] USB mounted, wrote updated files." >> $DIR/usbackup.log
+}
+
+
 #//User Input//
 while getopts ":hCsur" flag; do
     case ${flag} in
@@ -14,9 +75,8 @@ while getopts ":hCsur" flag; do
 
             -h  (help)          Displays this help message.
             -C  (configure)     Opens the configuration dialog (Recommended first!).
-            -s  (status)        Displays the last 25 operations carried out by the program.
-            -u  (unmount)       Signals usbackup to unmount the USB safely.
-            -r  (remount)       Signals to usbackup that the USB can be remounted.
+            -s  (status)        Displays the last 25 operations carried out by the program. (see $DIR/usbackup.log for more)
+            -u  (unmount)       Signals usbackup to unmount the USB safely. USB will automatically be remounted when put back.
         For more info please see: (https://github.com/amiable-blight/amiable-blight.github.io/tree/main/Bash/USBackup)"
         ;;
 
@@ -42,6 +102,7 @@ while getopts ":hCsur" flag; do
         dateup
         echo "[$DATE] NOTICE: Config file updated." | tee -a >> $DIR/usbackup.log
         }
+        configinit
         echo "USBackup configuration dialog:"
         if [[ $PCHECK == 0 ]]; then
             echo "Configuration file is valid. Would you like to erase and start over? (y/n)"
@@ -52,7 +113,7 @@ while getopts ":hCsur" flag; do
                 confconfig
             else
                 echo "Configuration aborted."
-                return 1
+                exit 0
             fi
         elif [[ $PCHECK == 1 ]]; then
             echo "#//USBACKUP CONFIGURATION FILE//" > $DIR/usbackup.conf
@@ -63,99 +124,31 @@ while getopts ":hCsur" flag; do
 
 
         s)
-        #show most recent 25 entries to log file
+        LINE=$(wc -l < $DIR/usbackup.log)
+        SIZE=$(wc -c < $DIR/usbackup.log)
+        tail -n 25 $DIR/usbackup.log
         echo "Last 25 log entries shown. Full log is located at '$DIR/usbackup.log'. Feel free to clear log from time to time."
+        echo "Total entries: $LINE; Log file size: $(($SIZE / 1000)) kB"
+        exit 0
         ;;
 
 
         u)
+        configinit
+        umount -f $MTPT
         dateup
         echo "[$DATE] USB manually unmounted." | tee -a $DIR/usbackup.log
-        umount -f $MTPT
-        start #triggers a stop by calling initial functions (hopefully)
+        exit 0
         ;;
-
-
-        r)
-        dateup
-        echo "[$DATE] USB manually remounted." | tee -a $DIR/usbackup.log
-        start
-        ;;
-
 
         :) echo "usbackup requires an argument. Try 'usbackup -h'"
+            exit 0
         ;;
         ?) echo "Unknown paramater. Try 'usbackup -h'"
+            exit 0
         ;;
     esac
 done
-
-
-
-#//Config File//
-conftest() {
-    sleep 5m
-    configinit
-}
-
-configinit () {
-CONFIG=$DIR/usbackup.conf
-PARAMS=$(grep -o USB_ID $CONFIG && grep -o USBMT $CONFIG && grep -o CPDIR $CONFIG && grep -o TIME $CONFIG)
-PCHECK="$?" #0 = found, 1 = not found
-
-if [[ -f "$CONFIG" ]]; then
-    if [[ $PCHECK == 1 ]]; then
-      dateup
-      echo "[$DATE] ERROR: $CONFIG configured improperly!" >> $DIR/usbackup.log
-      echo "USBackup configuration file is empty or missing components, please run 'usbackup -C'."
-      conftest
-      return 1
-    fi
-    source $CONFIG
-    dateup
-    echo "[$DATE] Config file loaded." >> $DIR/usbackup.log
-else
-    dateup
-    echo "[$DATE] ERROR: $CONFIG is missing!" >> $DIR/usbackup.log
-    echo "USBackup configuration file missing, please run 'usbackup -C'."
-    conftest
-fi
-}
-
-
-#//initialization//
-#Check for desired USB Drive
-usbinit () {
-    fdisk -l | grep -qo $USB_ID
-    usbstatus="$?" #0=dev detected, 1=not detected
-}
-
-usbcheck () {
-until [[ $usbstatus == 0 ]]; do #Must pass check to continue init
-    usbinit &>/dev/null #call function, suppress error output
-    sleep 10s
-done
-
-dateup
-echo "[$DATE] USB found." >> $DIR/usbackup.log
-}
-
-#initialize network
-ninit () {
-    ip address show | grep -qwo NO-CARRIER
-    nstatus="$?" #0=no connection, 1=connection
-}
-ninit #init var
-
-#initialize USB
-usbcreate () {
-MTPT=$(fdisk -l | grep --after-context=4 $USB_ID | grep -oE '/dev/.{,4}' &>/dev/null) #fetches mount from fdisk
-mount $MTPT $USBMT #mount, make sure USB is labeled correctly before running
-cp -a $CPDIR $USBMT #when USB is first plugged in, update with current files
-dateup
-echo "[$DATE] USB mounted, wrote updated files." >> $DIR/usbackup.log
-}
-
 
 #//Main Operation//
 #Define functions
@@ -165,34 +158,35 @@ until [[ $nstatus == 1 ]]; do #Do not proceed until network is obtained, already
     sleep 10s
 done
 
-if [[ $nstatus == 1 ]]; then
-    dateup
-    echo "[$DATE] Network found." >> $DIR/usbackup.log
-    functional
-
-fi
+dateup
+echo "[$DATE] Network found." >> $DIR/usbackup.log
+functional
 }
 
 functional () {
     timer=0
     while :; do
-            echo "Timer is $timer"
             ninit
-            if [[ $nstatus == 1 ]]; then
+            usbinit
+            if [ $nstatus == 1 -a $usbstatus == 0  ]; then
                 sleep 1m
                 ((timer++))
-
                 if [[ $timer == $TIME ]]; then
                     ninit
-                    if [[ $nstatus == 0 ]]; then noconnect && return 1; fi #worst case check
-                    timer=0
+                    if [[ $nstatus == 0 ]]; then noconnect & return 1; fi #worst case network check
+                    usbinit
+                    if [[ $usbstatus == 1 ]]; then nousb & return 1; fi #worst case USB check
                     dateup
                     echo "[$DATE] Time passed, writing to USB." >> $DIR/usbackup.log
-                    #cp -a $CPDIR $USBMT
+                    cp -a --no-preserve=ownership $CPDIR $USBMT
+                    timer=0
                 fi
-            else
-                echo "BROKE!"
-                noconnect
+            fi
+            if [[ $nstatus == 0 ]]; then
+                noconnect &
+                return 1
+            elif [[ $usbstatus == 1 ]]; then
+                nousb &
                 return 1
             fi
     done
@@ -201,8 +195,16 @@ functional () {
 noconnect () {
     dateup
     echo "[$DATE] Network down, writing to USB." >> $DIR/usbackup.log
-    #cp -a $CPDIR $USBMT
+    cp -a --no-preserve=ownership $CPDIR $USBMT
     ncheck
+}
+
+nousb () {
+    dateup
+    echo "[$DATE] USB lost, stopping." | tee -a $DIR/usbackup.log
+    usbcheck #waits until USB is found again
+    usbcreate #remounts
+    functional #goes back to normal function
 }
 
 
@@ -211,11 +213,11 @@ start () {
 configinit #checks .conf file
 usbinit &>/dev/null #init var, suppress error output
 usbcheck #checks USB status
-#usbcreate #mounts USB
+usbcreate #mounts USB
 ncheck #starts loop
 }
 
-start & #calls startup process
+start #calls startup process
 
 #//Current Issues//
-#Need to get the options fully working.
+#A lack of error log entries, even if it fails, it still says it did what was supposed to happen.
