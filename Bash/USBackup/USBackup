@@ -322,7 +322,6 @@ while getopts ":hCsur" flag; do
         echo "USBMT=$USB_MOUNT" >> $DIR/usbackup.conf
         echo "CPDIR=$USE_DIR" >> $DIR/usbackup.conf
         echo "TIME=$INTERVAL" >> $DIR/usbackup.conf
-        echo "NOTE: When the config is changed, the old entry must manually be deleted at $DIR/usbackup.conf" | tee -a usbackup.conf
         echo "NOTE: If the configuration is changed after its initial setup, either restart or run 'usbackup -u' then 'usbackup -r' to re-initialize."
         dateup
         echo "[$DATE] NOTICE: Config file updated." | tee -a >> $DIR/usbackup.log
